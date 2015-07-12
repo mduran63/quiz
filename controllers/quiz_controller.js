@@ -20,15 +20,33 @@ exports.load = function(req, res, next, quizId) {
 
 // GET /quizes
 exports.index = function(req, res) {
-      models.Quiz.findAll().then(
-         function(quizes) {
-            res.render('quizes/index.ejs', {quizes: quizes})
-         }
-      ).catch(
-         function(error) {
-            next(error);
-         }
-      );
+
+   // Objeto donde se configura las opciones de FindAll
+   // Inicialmente la lista ordenada por Pregunta, siempre.
+   var options = {order: 'pregunta'};
+
+   // Cadena a buscar
+   var cadena = '';
+
+   // Si nos han pasado un parámetro llamado 'search'
+   if(req.query.search) {
+
+      // Preparar cadena de búsqueda y convertir espacios a %
+      cadena = '%' + req.query.search + '%'
+      cadena = cadena.replace(' ', '%');
+
+      // construir Clausula WHERE
+      options.where = "pregunta like '" + cadena + "'";
+   }
+   models.Quiz.findAll(options).then(
+      function(quizes) {
+         res.render('quizes/index', {quizes: quizes})
+      }
+   ).catch(
+      function(error) {
+         next(error);
+      }
+   );
 };
 
 // GET /quizes/:id
