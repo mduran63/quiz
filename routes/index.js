@@ -24,7 +24,7 @@ router.put('/quizes/:quizId(\\d+)',          quizController.update);
 
 // Página de Créditos
 router.get('/quizes/author', function(req, res) {
-  res.render('author');
+  res.render('author', {errors: []});
 });
 
 module.exports = router;
