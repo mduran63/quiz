@@ -33,7 +33,7 @@ exports.index = function(req, res) {
 
       // Preparar cadena de búsqueda y convertir espacios a %
       cadena = '%' + req.query.search + '%'
-      cadena = cadena.replace(' ', '%');
+      cadena = cadena.replace(/ /g,"%");
 
       // construir Clausula WHERE
       options.where = "pregunta like '" + cadena + "'";
@@ -61,4 +61,27 @@ exports.answer = function(req, res) {
       resultado = 'Correcto';
    }
    res.render('quizes/answer', {quiz: req.quiz, respuesta: resultado});
+};
+
+// GET /quizes/new
+exports.new = function(req, res) {
+
+   // Crear un Objeto quiz para su posterior uso
+   var quiz = models.Quiz.build(
+      {pregunta: "Pregunta", respuesta: "Respuesta"}
+   );
+   res.render('quizes/new', {quiz: quiz});
+};
+
+// POST /quizes/create
+exports.create = function(req, res) {
+   var quiz = models.Quiz.build(req.body.quiz);
+
+   // Guardar en BD sólo los campos pregunta y respuesta
+   quiz.save({fields: ["pregunta", "respuesta"]}).then(
+      function() {
+         // Redireccionar a la lista de preguntas
+         res.redirect('/quizes');
+      }
+   );
 };
