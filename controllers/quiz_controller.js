@@ -68,7 +68,7 @@ exports.new = function(req, res) {
 
    // Crear un Objeto quiz para su posterior uso
    var quiz = models.Quiz.build(
-      {pregunta: "Pregunta", respuesta: "Respuesta"}
+      {pregunta: "Pregunta", respuesta: "Respuesta", categoria: ""}
    );
    res.render('quizes/new', {quiz: quiz, errors: []});
 };
@@ -87,15 +87,9 @@ exports.create = function(req, res) {
       function(err) {
          if (err) {
             res.render('quizes/new', {quiz: quiz, errors: err.errors});
-         } else {
-
-            // Guardar en BD sólo los campos pregunta y respuesta
-            quiz.save({fields: ["pregunta", "respuesta"]}).then(
-               function() {
-
-               // Volver a la lista de Preguntas
-               res.redirect('/quizes')
-               }
+         } else { // Guardar en BD sólo los campos pregunta y respuesta
+            quiz.save({fields: ["pregunta", "respuesta", "categoria"]}).then(
+               function() {res.redirect('/quizes')}
             );
          }
       }
@@ -115,20 +109,15 @@ exports.edit = function(req, res) {
 exports.update = function(req, res) {
    req.quiz.pregunta = req.body.quiz.pregunta;
    req.quiz.respuesta = req.body.quiz.respuesta;
+   req.quiz.categoria = req.body.quiz.categoria;
 
    req.quiz.validate().then(
       function(err) {
          if (err) {
             res.render('quizes/edit', {quiz: req.quiz, errors: err.errors});
-         } else {
-
-            // Guardar en BD sólo los campos pregunta y respuesta
-            req.quiz.save({fields: ["pregunta", "respuesta"]}).then(
-               function() {
-
-               // Volver a la lista de Preguntas
-               res.redirect('/quizes')
-               }
+         } else { // Guardar en BD sólo los campos pregunta y respuesta
+            req.quiz.save({fields: ["pregunta", "respuesta", "categoria"]}).then(
+               function() {res.redirect('/quizes')}
             );
          }
       }
