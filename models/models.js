@@ -30,13 +30,21 @@ var sequelize = new Sequelize(DB_name, user, pwd,
 // Importar la definición de la tabla Quiz en quiz.js
 var Quiz = sequelize.import(path.join(__dirname, 'quiz'));
 
-// Exportar definición de la tabla Quiz
+// Importar la definición de la tabla Comment en comment.js
+var Comment = sequelize.import(path.join(__dirname, 'comment'));
+Comment.belongsTo(Quiz);
+Quiz.hasMany(Comment);
+
+// Exportar definición de Tablas
 exports.Quiz = Quiz;
+exports.Comment = Comment;
 
 // sequelize.sync() crea e inicializa la tabla de preguntas en la BBDD
 sequelize.sync().then(function() {
-   // success(..) ejecuta el manejador de creación de la tabla
+
+   // Inicializar la tabla Quiz, si corresponde
    Quiz.count().then(function (count) {
+
       // La tabla se inicializa sólo si está vacía
       if(count === 0) {
          Quiz.create({ pregunta: 'Capital de Italia',

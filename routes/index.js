@@ -3,6 +3,7 @@ var router = express.Router();
 
 // Carga de controladores
 var quizController = require('../controllers/quiz_controller');
+var commentController = require('../controllers/comment_controller');
 
 // Página de entrada o Home Page
 router.get('/', function(req, res) {
@@ -22,6 +23,10 @@ router.post('/quizes/create',                quizController.create);
 router.get('/quizes/:quizId(\\d+)/edit',     quizController.edit);
 router.put('/quizes/:quizId(\\d+)',          quizController.update);
 router.delete('/quizes/:quizId(\\d+)',       quizController.destroy);
+
+// Rutas de Comentarios
+router.get('/quizes/:quizId(\\d+)/comments/new',   commentController.new);
+router.post('/quizes/:quizId(\\d+)/comments',      commentController.create);
 
 // Página de Créditos
 router.get('/quizes/author', function(req, res) {
