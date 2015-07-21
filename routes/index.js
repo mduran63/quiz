@@ -11,9 +11,11 @@ router.get('/', function(req, res) {
   res.render('index', { title: 'Quiz', errors: [] });
 });
 
-// Autoload de comandos con :quizId
-// Indica que si en la ruta existe un parámetro con nombre quizId, se ejecuta la función
-router.param('quizId', quizController.load);
+// Autoload de comandos con :quizId o :comentId
+// Indica que si en la ruta existe un parámetro con nombre quizId o comentId,
+// se ejecuta la función
+router.param('quizId',     quizController.load);
+router.param('commentId',  commentController.load);
 
 // Rutas de Sesión
 router.get('/login',    sessionController.new);       // Formulario de Login
@@ -33,6 +35,8 @@ router.delete('/quizes/:quizId(\\d+)',       sessionController.loginRequired, qu
 // Rutas de Comentarios
 router.get('/quizes/:quizId(\\d+)/comments/new',   commentController.new);
 router.post('/quizes/:quizId(\\d+)/comments',      commentController.create);
+router.get('/quizes/:quizId(\\d+)/comments/:commentId(\\d+)/publish',
+   sessionController.loginRequired, commentController.publish);
 
 // Página de Créditos
 router.get('/quizes/author', function(req, res) {
