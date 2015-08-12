@@ -42,6 +42,42 @@ app.use(function(req, res, next) {
    next();
 });
 
+// Desconexión automática - Auto-logout
+app.use(function(req, res, next) {
+
+  // Si hay Sesión iniciada, realizar la comprobación
+   if (req.session.user) {
+      var hora = new Date().getTime();
+
+      // Si no existe información previa, obtener hora actual
+      // Esto se da en el primer inicio
+      if (!req.session.lastTime) {
+         req.session.lastTime = hora;
+         next();
+      } else {
+         var miliseg;   // Almacena la diferencia en milisegundos
+
+         // Obtener la diferencia de tiempo actual en milisegundos
+         miliseg = hora - req.session.lastTime;
+
+         // Actualizar la hora actual para la siguiente comprobación
+         req.session.lastTime = hora;
+
+         // Las diferencias se calculan el milisegundos
+         if (miliseg < 20000) {
+            next();
+         } else {
+            delete req.session.lastTime;
+            delete req.session.user;
+            res.redirect('/login');
+         }
+      }
+   } else {
+      next();
+   }
+});
+
+
 app.use('/', routes);
 
 // catch 404 and forward to error handler
